@@ -6,6 +6,7 @@ HeliumLogger.use()
 let router = Router()
 
 router.all(middleware: BodyParser())
+router.all("/", middleware: StaticFileServer(path: "./assets"))
 
 var students : [String : Double] = [
   "Alex": 12.5, 
@@ -69,7 +70,7 @@ router.get("/") { request, response, next in
 
     let message = showStudents()
     
-    response.send("<html><body><h1>EEMI TECH </h1> <div><form action='/result' method='POST'><input type='text' name='name'/><input type='submit' value='OK'/></form></div> <div> \(message)</body></html>")
+    response.send("<div><form action='/result' method='POST'><input type='text' name='name'/><input type='submit' value='OK'/></form></div> <div>\(message)</div>")
     
     next()
 }
