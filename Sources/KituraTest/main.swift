@@ -6,7 +6,7 @@ HeliumLogger.use()
 let router = Router()
 
 router.all(middleware: BodyParser())
-router.all("/", middleware: StaticFileServer(path: "./assets"))
+router.all(middleware: [BodyParser(), StaticFileServer(path: "./Assets")])
 
 var students : [String : Double] = [
   "Alex": 12.5, 
@@ -40,55 +40,68 @@ var students : [String : Double] = [
   "Maxime": 6,
   "Xavier": 7,
 ]
+let sortedStudents = students.sorted(by: { $0.value < $1.value })
+
+let headerHTML : String = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><meta http-equiv='X-UA-Compatible' content='ie=edge'><link rel='stylesheet' href='style.css'><title>EEMI TECH</title></head><body>"
+let footerHTML : String = "</body></html>"
+// FUNCTIONS //
 
 func showStudents() -> String {
-
-    var result : String =  ""
-
-    let result_head : String = "<table style='border:1px solid #000; font-family: arial, sans-serif; border-collapse: collapse;'> <tr> <th>Name</th> <th>Mark</th> </tr>"
-
-    var result_body: String = "" 
-
-    for (name, mark) in students {
-      result_body += "<tr> <td>\(name)</td> <td>\(mark)</td> </tr>"
+    
+    var result : String =  "<table> <tr> <th>Name</th> <th>Mark</th> </tr>"
+    for (name, mark) in sortedStudents {
+      result += "<tr> <td>\(name)</td> <td>\(mark)</td> </tr>"
     } 
-
-    result = result_head + result_body + "</table>"
-
+    result += "</table>"
     return result
 }
 
-func getStudent(_ name : String) -> String {
-  return name
+func getQueryStudents(_ name : String) -> String {
+
+  var result : String = "<div>"
+  let filtered = students.filter { $0.key.contains(name) || $0.key.lowercased().hasPrefix(name) }
+  for (student) in filtered {
+    result += "<a href='student/\(student.key)'>\(student.key)</a>"
+  }
+  result += "</div>"
+  return result
 }
 
-var newname = getStudent("mama")
+func computeStudentData(_ name : String) -> String {
+  let mediane : String = sortedStudents[sortedStudents.length].value
+  return mediane
 
-router.all(middleware: BodyParser())
+}
+
+// ROUTER ENDPOINTS //
 
 router.get("/") { request, response, next in
-
+    response.headers["Content-Type"] = "text/html; charset=utf-8"
     let message = showStudents()
-    
-    response.send("<div><form action='/result' method='POST'><input type='text' name='name'/><input type='submit' value='OK'/></form></div> <div>\(message)</div>")
-    
+    response.send(headerHTML + "<div><form action='/result' method='POST'><input type='text' name='name'/><input type='submit' value='OK'/></form></div> <div>\(message)</div>" + footerHTML)
     next()
 }
 
 router.post("/result") { request, response, next in
     // will repond to http://localhost:8080/ryan
-    
+    response.headers["Content-Type"] = "text/html; charset=utf-8"
     if let query = request.body?.asURLEncoded{
       query["name"]
-      response.send(query["name"])
+      response.send(headerHTML + getQueryStudents(query["name"]!) + footerHTML)
       next()
     } else {
-      response.send("Votre requête est vide.")
+      response.send(headerHTML + "<div class='message'>Votre requête est vide.</div>" + footerHTML)
       next()
     }
-
 }
 
+router.get("/student/:name") { request, response, next in
+    response.headers["Content-Type"] = "text/html; charset=utf-8"
+    let name = request.parameters["name"] ?? ""
+    let data = computeStudentData(name)
+    response.send("\(data)")
+    next()
+}
 
 Kitura.addHTTPServer(onPort: 8080, with: router)
 Kitura.run()
