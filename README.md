@@ -1,4 +1,5 @@
 # TP BACKEND with Swift
+Ryan Fennane & Benjamin Kichenamourty
 
 ## Description
 
