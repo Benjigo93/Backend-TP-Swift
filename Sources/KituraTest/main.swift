@@ -68,9 +68,12 @@ func getQueryStudents(_ name : String) -> String {
 }
 
 func computeStudentData(_ name : String) -> String {
-  let mediane : String = sortedStudents[sortedStudents.length].value
-  return mediane
-
+  let mediane : Double = sortedStudents[sortedStudents.count/2].value
+  let moyenne : Double = sortedStudents.reduce(0, { result, marks in return result + marks.value/Double(sortedStudents.count)})
+  let stringMoyenne : String = String(format:"%.2f", moyenne)
+  let ecartype : Double? = students[name]!/moyenne
+  let stringEcartype : String = String(format:"%.2f", ecartype!)
+  return "La moyenne de \(name) est \(students[name]!) , la mediane de la classe est \(mediane), la moyenne de la classe est \(stringMoyenne), l'écartype de \(name) est \(stringEcartype) "
 }
 
 // ROUTER ENDPOINTS //
