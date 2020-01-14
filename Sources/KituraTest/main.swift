@@ -42,39 +42,49 @@ var students : [String : Double] = [
 ]
 let sortedStudents = students.sorted(by: { $0.value < $1.value })
 
-let headerHTML : String = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><meta http-equiv='X-UA-Compatible' content='ie=edge'><link rel='stylesheet' href='style.css'><title>EEMI TECH</title></head><body>"
-let footerHTML : String = "</body></html>"
+let headerHTML : String = "<!DOCTYPE html><html lang='en'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1.0'><meta http-equiv='X-UA-Compatible' content='ie=edge'><link rel='stylesheet' href='../style.css'><title>Student Record</title></head><body><container class='container'><h1><a href='/'>Student Record</a></h1>"
+let footerHTML : String = "</container></body></html>"
+
+
 // FUNCTIONS //
 
 func showStudents() -> String {
     
-    var result : String =  "<table> <tr> <th>Name</th> <th>Mark</th> </tr>"
+    var result : String =  "<table> <thead> <tr> <th>Name</th> <th>Mark</th> </tr> </thead> <tbody>"
     for (name, mark) in sortedStudents {
-      result += "<tr> <td>\(name)</td> <td>\(mark)</td> </tr>"
+      result += "<tr> <td><a href='/student/\(name)'>\(name)</a></td> <td><a href='/student/\(name)'>\(mark)</a></td> </tr>"
     } 
-    result += "</table>"
+    result += "</tbody> </table>"
     return result
 }
 
 func getQueryStudents(_ name : String) -> String {
 
-  var result : String = "<div>"
+  var result : String 
   let filtered = students.filter { $0.key.contains(name) || $0.key.lowercased().hasPrefix(name) }
-  for (student) in filtered {
+  if filtered.count > 0 {
+    result = "<div class='query__result'> <span>The result for <span class='query'>'\(name)'</span> are :</span> <div class='links'>"
+    for (student) in filtered {
     result += "<a href='student/\(student.key)'>\(student.key)</a>"
+    }
+  } else {
+    result = "<div class='query__result'> <span>There is no <span class='query'>'\(name)'</span> in the record :(</span>"
   }
-  result += "</div>"
+  result += "</div></div>"
   return result
 }
 
 func computeStudentData(_ name : String) -> String {
+
   let mediane : Double = sortedStudents[sortedStudents.count/2].value
   let moyenne : Double = sortedStudents.reduce(0, { result, marks in return result + marks.value/Double(sortedStudents.count)})
   let stringMoyenne : String = String(format:"%.2f", moyenne)
   let ecartype : Double? = students[name]!/moyenne
   let stringEcartype : String = String(format:"%.2f", ecartype!)
-  return "La moyenne de \(name) est \(students[name]!) , la mediane de la classe est \(mediane), la moyenne de la classe est \(stringMoyenne), l'écartype de \(name) est \(stringEcartype) "
+  return "<div class='student__data'><span> The \(name)'s mean mark is <span class='data'>\(students[name]!)</span> </span> <span> The median of the class is <span class='data'>\(mediane)</span> </span> <span> The mean mark of the class is <span class='data'>\(stringMoyenne)</span> </span> <span> The standard deviation of \(name) is <span class='data'>\(stringEcartype)</span> (\(stringMoyenne) / \(students[name]!)) </span> </div>"
+
 }
+
 
 // ROUTER ENDPOINTS //
 
@@ -101,8 +111,7 @@ router.post("/result") { request, response, next in
 router.get("/student/:name") { request, response, next in
     response.headers["Content-Type"] = "text/html; charset=utf-8"
     let name = request.parameters["name"] ?? ""
-    let data = computeStudentData(name)
-    response.send("\(data)")
+    response.send(headerHTML + computeStudentData(name) + footerHTML)
     next()
 }
 

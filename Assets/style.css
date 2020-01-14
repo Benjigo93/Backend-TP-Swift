@@ -1,9 +1,144 @@
 body{
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #3a9999;
+  color: #ffffff;
+  overflow-x: hidden;
 }
 
-table{
+.container{
+  display: flex;
+  width: 100vw;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: column;
+}
+
+.container h1{
+  text-shadow: -1px 0 #1a3b5d, 0 1px #1a3b5d, 1px 0 #1a3b5d, 0 -1px #1a3b5d;
+  font-size: 3.5em;
+}
+
+.container h1 a{
+  text-decoration: none;
+  color: #fff;
+}
+
+/* HOME PAGE */
+
+.container form input{
+  border-radius: 5px;
+  box-shadow: none;
+  border: 1px solid #ced6e0;
+  background: #ffffff;
+  transition: all 0.3s ease-in-out;
+  font-size: 18px;
+  padding: 10px 15px;
+  color: #1a3b5d;
+}
+
+.container form input:last-of-type{
+  cursor: pointer;
+}
+
+.container table{
   border:1px solid #000; 
   font-family: arial, sans-serif; 
   border-collapse: collapse;
+  background: #ffffff;
+  color: #000;
+  margin: 5vh;
+}
+
+.container table th{
+  padding: 1em;
+  background: #81ecec94;
+}
+
+.container table tbody td{
+  padding: 1em 2em;
+  color: #1a3b5d;
+}
+.container table tbody td a {
+  text-decoration: none;
+  color: #1a3b5d;
+}
+
+.container table tbody tr:first-of-type td{
+  padding-top: 1em;
+}
+
+.container table tbody tr:last-of-type td{
+  padding-bottom: 1em;
+}
+
+.container table tr{
+  border:1px solid #000; 
+}
+
+/* RESULT PAGE */
+
+.container .query__result{
+  text-align: center;
+}
+
+.container .query__result span{
+  display: inline-block;
+  margin-top: 5vh;
+  font-size: 2rem;
+}
+
+.container .query__result span.query{
+  color: #1a3b5d;
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.container .query__result .links{
+  text-align: center;
+  margin: 2em;
+}
+
+.container .query__result .links a{
+  display: block;
+  margin: 0.5em;
+  text-decoration: none;
+  color: #1a3b5d;
+  font-size: 2em;
+  transition: all 0.3s ease-in-out;
+  background-color: #ffffff;
+  border-radius: 5px;
+  padding: 20px 15px;
+  border: 1px solid #1a3b5d;
+}
+
+
+.container .query__result .links a:hover{
+  color: #15293d;
+  background: #d3ffff;
+}
+
+/* STUDENT PAGE */
+
+.container .student__data{
+  margin-top: 5vh;
+  background: #00b894;
+  border-radius: 15px;
+  padding: 5vw;
+  border: 1px solid #1a3b5d;
+  transition: all 0.3s ease-in-out;
+}
+
+.container .student__data span{
+  display: block;
+  font-size: 1.75rem;
+  margin: 0.25em;
+}
+
+.container .student__data span.data{
+  color: #4c4c4c;
+  display: inline-block;
+  font-weight: bold;
+  text-shadow: -1px 0 #3a9999, 0 1px #3a9999, 1px 0 #3a9999, 0 -1px #3a9999;
 }
